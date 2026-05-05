@@ -1,0 +1,15 @@
+.build/
+.swiftpm/
+.DS_Store
+DerivedData/
+*.xcodeproj/
+*.xcworkspace/
+*.xcuserstate
+*.xcuserdata/
+
+# Local runtime/model artifacts. The model lives on Hugging Face.
+.venv/
+Breeze-ASR-26-mlx-4bit/
+*.wav
+*.aiff
+output/

@@ -14,7 +14,7 @@ import Testing
         "-m", "mlx_audio.stt.generate",
         "--model", "/models/Breeze-ASR-26-mlx-4bit",
         "--audio", "/tmp/input.wav",
-        "--output-path", "/tmp/out",
+        "--output-path", "/tmp/out/transcript",
         "--format", "json",
         "--language", "zh"
     ])

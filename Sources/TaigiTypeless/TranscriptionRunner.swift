@@ -3,6 +3,7 @@ import Foundation
 enum TranscriptionError: Error, LocalizedError {
     case commandFailed(String)
     case missingOutput
+    case noSpeechDetected
 
     var errorDescription: String? {
         switch self {
@@ -10,6 +11,8 @@ enum TranscriptionError: Error, LocalizedError {
             return detail
         case .missingOutput:
             return "No transcription output was produced."
+        case .noSpeechDetected:
+            return "No speech was detected in the recording."
         }
     }
 }
@@ -60,9 +63,10 @@ struct TranscriptionRunner {
 
         if let jsonURL = files.first(where: { $0.pathExtension == "json" }),
            let data = try? Data(contentsOf: jsonURL),
-           let payload = try? JSONDecoder().decode(STTOutput.self, from: data),
-           !payload.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return payload.text
+           let payload = try? JSONDecoder().decode(STTOutput.self, from: data) {
+            let text = payload.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !text.isEmpty else { throw TranscriptionError.noSpeechDetected }
+            return text
         }
 
         if let textURL = files.first(where: { $0.pathExtension == "txt" }),

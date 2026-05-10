@@ -1,6 +1,8 @@
 import AppKit
 
+private let retainedDelegate = AppDelegate()
+
 let app = NSApplication.shared
-let delegate = AppDelegate()
-app.delegate = delegate
+app.setActivationPolicy(.regular)
+app.delegate = retainedDelegate
 app.run()

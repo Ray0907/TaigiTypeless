@@ -10,12 +10,18 @@ struct TranscriptionCommand {
         pythonPath
     }
 
+    var outputPath: String {
+        URL(fileURLWithPath: outputDirectory, isDirectory: true)
+            .appendingPathComponent("transcript")
+            .path
+    }
+
     var arguments: [String] {
         [
             "-m", "mlx_audio.stt.generate",
             "--model", modelPath,
             "--audio", audioPath,
-            "--output-path", outputDirectory,
+            "--output-path", outputPath,
             "--format", "json",
             "--language", "zh"
         ]

@@ -22,6 +22,21 @@ struct TranscriptionRunner {
     let polisher: TextPolisher
 
     func transcribe(audioPath: String) throws -> String {
+        do {
+            let rawText = try PersistentTranscriptionWorker.shared.transcribe(
+                audioPath: audioPath,
+                configuration: configuration
+            )
+            return polisher.polish(rawText)
+        } catch TranscriptionError.noSpeechDetected {
+            throw TranscriptionError.noSpeechDetected
+        } catch {
+            let rawText = try transcribeWithOneShotCommand(audioPath: audioPath)
+            return polisher.polish(rawText)
+        }
+    }
+
+    private func transcribeWithOneShotCommand(audioPath: String) throws -> String {
         let outputDirectory = "\(configuration.workingDirectory)/output-\(UUID().uuidString)"
         try FileManager.default.createDirectory(atPath: outputDirectory, withIntermediateDirectories: true)
 
@@ -29,7 +44,9 @@ struct TranscriptionRunner {
             pythonPath: configuration.pythonPath,
             modelPath: configuration.modelPath,
             audioPath: audioPath,
-            outputDirectory: outputDirectory
+            outputDirectory: outputDirectory,
+            language: configuration.language,
+            maxTokens: configuration.maxTokens
         )
 
         let process = Process()
@@ -50,8 +67,7 @@ struct TranscriptionRunner {
             throw TranscriptionError.commandFailed(stderrText.isEmpty ? stdoutText : stderrText)
         }
 
-        let rawText = try readTranscriptionText(from: outputDirectory, stdout: stdoutText)
-        return polisher.polish(rawText)
+        return try readTranscriptionText(from: outputDirectory, stdout: stdoutText)
     }
 
     private func readTranscriptionText(from outputDirectory: String, stdout: String) throws -> String {

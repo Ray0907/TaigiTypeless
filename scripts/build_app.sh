@@ -28,6 +28,7 @@ swift build -c release
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$EXECUTABLE" "$APP/Contents/MacOS/TaigiTypeless"
+cp "$ROOT/scripts/stt_worker.py" "$APP/Contents/Resources/stt_worker.py"
 
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -60,7 +61,9 @@ cat > "$APP/Contents/Resources/config.json" <<JSON
 {
   "pythonPath": "$PYTHON_PATH",
   "modelPath": "$MODEL_PATH",
-  "workingDirectory": "$WORKDIR"
+  "workingDirectory": "$WORKDIR",
+  "language": "zh",
+  "maxTokens": 512
 }
 JSON
 

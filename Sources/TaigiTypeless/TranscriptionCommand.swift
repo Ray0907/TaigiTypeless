@@ -5,6 +5,8 @@ struct TranscriptionCommand {
     let modelPath: String
     let audioPath: String
     let outputDirectory: String
+    let language: String
+    let maxTokens: Int
 
     var executable: String {
         pythonPath
@@ -23,7 +25,8 @@ struct TranscriptionCommand {
             "--audio", audioPath,
             "--output-path", outputPath,
             "--format", "json",
-            "--language", "zh"
+            "--language", language,
+            "--max-tokens", String(maxTokens)
         ]
     }
 }

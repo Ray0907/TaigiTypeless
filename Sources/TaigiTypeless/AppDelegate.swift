@@ -301,6 +301,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func quit() {
         loadingTimer?.invalidate()
+        PersistentTranscriptionWorker.shared.stop()
         NSApplication.shared.terminate(nil)
     }
 
